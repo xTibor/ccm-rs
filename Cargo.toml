@@ -1,0 +1,16 @@
+[workspace.package]
+version = "0.1.0"
+authors = ["Nagy Tibor <xnagytibor@protonmail.com>"]
+license = "MIT"
+edition = "2021"
+rust-version = "1.76"
+
+[workspace]
+resolver = "2"
+members = [
+    "crates/ccm-impl",
+    "crates/ccm-image",
+]
+
+[workspace.dependencies]
+ccm-impl = { path = "crates/ccm-impl" }

@@ -1,0 +1,11 @@
+[package]
+name         = "ccm-impl"
+description  = "Robust least-squares color correction"
+version      = { workspace = true }
+authors      = { workspace = true }
+license      = { workspace = true }
+edition      = { workspace = true }
+rust-version = { workspace = true }
+
+[dependencies]
+nalgebra = { version = "0.32.3", features = ["std", "alloc"], default-features = false }
