@@ -56,9 +56,10 @@ fn linear_to_srgb(linear_color: &LinearColor) -> SRgbColor {
 
 #[rustfmt::skip]
 pub const COLOR_REFERENCE_CHARTS: &[(&str, (usize, usize), &[SRgbColor])] = &[
-    ("xrite",        (6, 4), &COLORS_XRITE_COLORCHECKER    ),
-    ("charttu",      (6, 4), &COLORS_CHARTTU_COLORCHECKER  ),
-    ("spydercheckr", (8, 6), &COLORS_DATACOLOR_SPYDERCHECKR),
+    ("xrite",           (6, 4), &COLORS_XRITE_COLORCHECKER    ),
+    ("charttu",         (6, 4), &COLORS_CHARTTU_COLORCHECKER  ),
+    ("chinese-generic", (6, 4), &COLORS_CHINESE_GENERIC       ),
+    ("spydercheckr",    (8, 6), &COLORS_DATACOLOR_SPYDERCHECKR),
 ];
 
 #[rustfmt::skip]
@@ -75,6 +76,14 @@ pub const COLORS_CHARTTU_COLORCHECKER: [SRgbColor; 24] = [
     [230, 129,  55], [ 73,  91, 167], [195,  81,  97], [ 96,  60, 106], [161, 189,  64], [227, 161,  37],
     [ 39,  61, 144], [ 65, 150,  75], [181,  55,  60], [236, 200,  25], [192,  82, 149], [  1, 134, 166],
     [241, 242, 236], [201, 203, 203], [161, 163, 163], [120, 120, 121], [ 86,  86,  87], [ 50,  51,  52],
+];
+
+#[rustfmt::skip]
+pub const COLORS_CHINESE_GENERIC: [SRgbColor; 24] = [
+    [115,  82,  69], [204, 161, 141], [101, 134, 179], [ 89, 109,  61], [141, 137, 194], [132, 228, 208],
+    [249, 118,  35], [ 80,  91, 182], [222,  91, 125], [ 91,  63, 123], [173, 232,  91], [255, 164,  26],
+    [ 44,  56, 142], [ 74, 148,  81], [179,  42,  50], [250, 226,  21], [191,  81, 160], [  6, 142, 172],
+    [252, 252, 252], [230, 230, 230], [200, 200, 200], [143, 143, 142], [100, 100, 100], [ 50,  50,  50],
 ];
 
 // sRGB channel values for Patch 2G (Blueprint) are incorrect in the Datacolor docs.
