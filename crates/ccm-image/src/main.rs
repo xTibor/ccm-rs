@@ -1,5 +1,5 @@
 use ccm_impl::color_reference_charts::{COLOR_REFERENCE_CHARTS, XRITE_COLORCHECKER};
-use ccm_impl::{apply_ccm, calculate_ccm};
+use ccm_impl::{apply_ccm, calculate_ccm, PerspectiveGridIterator};
 
 fn main() {
     #[rustfmt::skip]
@@ -42,5 +42,11 @@ fn main() {
             println!();
         }
         println!();
+    }
+
+    for (x, y) in
+        PerspectiveGridIterator::new([(13.0, 178.0), (270.0, 207.0), (148.0, 452.0), (15.0, 349.0)], (7, 5)).unwrap()
+    {
+        println!("{x:}, {y:}");
     }
 }
