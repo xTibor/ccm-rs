@@ -17,6 +17,10 @@
 //! * SpyderCheckr Color Data
 //!   Datacolor, 2016
 //!   https://web.archive.org/web/20171116080802/http://www.datacolor.com/wp-content/uploads/2016/08/SpyderCheckr_Color_Data.pdf
+//!
+//! * New color specifications for ColorChecker SG and Classic Charts
+//!   X-Rite, Incorporated
+//!   https://www.xrite.com/service-support/new_color_specifications_for_colorchecker_sg_and_classic_charts
 
 mod color;
 mod color_correction_matrix;

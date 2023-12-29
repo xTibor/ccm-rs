@@ -1,4 +1,4 @@
-use ccm_impl::color_reference_charts::{COLOR_REFERENCE_CHARTS, XRITE_COLORCHECKER};
+use ccm_impl::color_reference_charts::{COLOR_REFERENCE_CHARTS, XRITE_COLORCHECKER_CLASSIC_2014};
 use ccm_impl::{apply_ccm, calculate_ccm, PerspectiveGridIterator};
 
 fn main() {
@@ -10,7 +10,7 @@ fn main() {
         [191, 156, 114], [160, 132,  93], [130, 107,  77], [ 97,  78,  53], [ 67,  55,  37], [ 44,  34,  20],
     ];
 
-    let ccm_matrix = calculate_ccm(&colors_detected, &XRITE_COLORCHECKER);
+    let ccm_matrix = calculate_ccm(&colors_detected, &XRITE_COLORCHECKER_CLASSIC_2014);
     println!("{ccm_matrix:}");
 
     println!("DETECT  | CORR    | REF");
@@ -18,7 +18,7 @@ fn main() {
     for (color_detected, color_reference, color_corrected) in
         colors_detected
             .iter()
-            .zip(XRITE_COLORCHECKER)
+            .zip(XRITE_COLORCHECKER_CLASSIC_2014)
             .map(|(color_detected, color_reference)| {
                 (color_detected, color_reference, apply_ccm(color_detected, &ccm_matrix))
             })
