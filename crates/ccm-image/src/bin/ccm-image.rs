@@ -1,5 +1,6 @@
 use ccm_impl::color_reference_charts::XRITE_COLORCHECKER_CLASSIC_2014;
 use ccm_impl::{apply_ccm, calculate_ccm, PerspectiveGridIterator};
+use image::GenericImage;
 
 fn main() {
     #[rustfmt::skip]
@@ -36,4 +37,20 @@ fn main() {
     {
         println!("{x:}, {y:}");
     }
+
+    let image = image::open("test/perspective-test.png").unwrap();
+    let mut output_image = image.clone();
+
+    for points in &[
+        [(19.0, 19.0), (179.0, 19.0), (179.0, 115.0), (19.0, 115.0)],
+        [(264.0, 63.0), (365.0, 29.0), (364.0, 115.0), (266.0, 160.0)],
+        [(24.0, 210.0), (211.0, 254.0), (138.0, 426.0), (24.0, 340.0)],
+        [(321.0, 230.0), (383.0, 196.0), (443.0, 354.0), (300.0, 408.0)],
+    ] {
+        for (x, y) in PerspectiveGridIterator::new(*points, (6, 4)).unwrap() {
+            output_image.put_pixel(x as u32, y as u32, [0, 255, 0, 255].into());
+        }
+    }
+
+    output_image.save("test/perspective-test.output.png").unwrap();
 }
