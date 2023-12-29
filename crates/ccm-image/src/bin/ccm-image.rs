@@ -1,4 +1,4 @@
-use ccm_impl::color_reference_charts::{COLOR_REFERENCE_CHARTS, XRITE_COLORCHECKER_CLASSIC_2014};
+use ccm_impl::color_reference_charts::XRITE_COLORCHECKER_CLASSIC_2014;
 use ccm_impl::{apply_ccm, calculate_ccm, PerspectiveGridIterator};
 
 fn main() {
@@ -15,13 +15,12 @@ fn main() {
 
     println!("DETECT  | CORR    | REF");
 
-    for (color_detected, color_reference, color_corrected) in
-        colors_detected
-            .iter()
-            .zip(XRITE_COLORCHECKER_CLASSIC_2014)
-            .map(|(color_detected, color_reference)| {
-                (color_detected, color_reference, apply_ccm(color_detected, &ccm_matrix))
-            })
+    for (color_detected, color_reference, color_corrected) in colors_detected
+        .iter()
+        .zip(XRITE_COLORCHECKER_CLASSIC_2014)
+        .map(|(color_detected, color_reference)| {
+            (color_detected, color_reference, apply_ccm(color_detected, &ccm_matrix))
+        })
     {
         #[rustfmt::skip]
         println!(
@@ -30,18 +29,6 @@ fn main() {
             color_corrected[0], color_corrected[1], color_corrected[2],
             color_reference[0], color_reference[1], color_reference[2],
         );
-    }
-
-    for (ref_name, (ref_width, ref_height), ref_colors) in COLOR_REFERENCE_CHARTS {
-        println!("{ref_name:}");
-        for y in 0..*ref_height {
-            for x in 0..*ref_width {
-                let [r, g, b] = ref_colors[y * ref_width + x];
-                print!("#{:02X}{:02X}{:02X} ", r, g, b);
-            }
-            println!();
-        }
-        println!();
     }
 
     for (x, y) in

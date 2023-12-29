@@ -2,14 +2,14 @@ use crate::color::SRgbColor;
 
 #[rustfmt::skip]
 pub const COLOR_REFERENCE_CHARTS: &[(&str, (usize, usize), &[SRgbColor])] = &[
+    ("charttu-colorchecker",            ( 6,  4), &CHARTTU_COLORCHECKER           ),
+    ("chinese-generic",                 ( 6,  4), &CHINESE_GENERIC                ),
+    ("datacolor-spydercheckr",          ( 8,  6), &DATACOLOR_SPYDERCHECKR         ),
     ("xrite-colorchecker-classic-2009", ( 6,  4), &XRITE_COLORCHECKER_CLASSIC_2009),
     ("xrite-colorchecker-classic-2014", ( 6,  4), &XRITE_COLORCHECKER_CLASSIC_2014),
     ("xrite-colorchecker-classic-old",  ( 6,  4), &XRITE_COLORCHECKER_CLASSIC_OLD ),
     ("xrite-colorchecker-sg-2014",      (14, 10), &XRITE_COLORCHECKER_SG_2014     ),
     ("xrite-colorchecker-sg-old",       (14, 10), &XRITE_COLORCHECKER_SG_OLD      ),
-    ("charttu-colorchecker",            ( 6,  4), &CHARTTU_COLORCHECKER           ),
-    ("chinese-generic",                 ( 6,  4), &CHINESE_GENERIC                ),
-    ("datacolor-spydercheckr",          ( 8,  6), &DATACOLOR_SPYDERCHECKR         ),
 ];
 
 #[rustfmt::skip]

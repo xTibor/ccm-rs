@@ -1,6 +1,6 @@
 use nalgebra::{Dyn, Matrix3, OMatrix, OVector, RowVector3, U3};
 
-use crate::color::{SRgbColor, srgb_to_linear, linear_to_srgb};
+use crate::color::{linear_to_srgb, srgb_to_linear, SRgbColor};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
