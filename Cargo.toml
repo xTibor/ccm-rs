@@ -10,7 +10,11 @@ resolver = "2"
 members = [
     "crates/ccm-impl",
     "crates/ccm-image",
+    "crates/ccm-tools",
 ]
 
 [workspace.dependencies]
-ccm-impl = { path = "crates/ccm-impl" }
+ccm-impl  = { path = "crates/ccm-impl"  }
+ccm-image = { path = "crates/ccm-image" }
+
+image = { version = "0.24.7" }

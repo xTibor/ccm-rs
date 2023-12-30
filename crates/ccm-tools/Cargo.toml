@@ -1,6 +1,5 @@
 [package]
-name         = "ccm-image"
-description  = "Color correction support for image-rs"
+name         = "ccm-tools"
 version      = { workspace = true }
 authors      = { workspace = true }
 license      = { workspace = true }
@@ -8,5 +7,6 @@ edition      = { workspace = true }
 rust-version = { workspace = true }
 
 [dependencies]
-ccm-impl = { workspace = true }
-image    = { workspace = true }
+ccm-impl  = { workspace = true }
+ccm-image = { workspace = true }
+image     = { workspace = true }

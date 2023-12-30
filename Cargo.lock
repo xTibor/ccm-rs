@@ -63,6 +63,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "ccm-tools"
+version = "0.1.0"
+dependencies = [
+ "ccm-image",
+ "ccm-impl",
+ "image",
+]
+
+[[package]]
 name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

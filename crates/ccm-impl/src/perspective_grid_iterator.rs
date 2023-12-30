@@ -8,18 +8,18 @@ pub enum PerspectiveGridError {
 #[derive(Debug)]
 pub struct PerspectiveGridIterator {
     transform: Matrix3<f64>,
-    resolution: (usize, usize),
+    grid_resolution: (usize, usize),
     next_point_index: usize,
 }
 
 impl PerspectiveGridIterator {
     #[rustfmt::skip]
     pub fn new(
-        points: [(f64, f64); 4],
-        resolution: (usize, usize),
+        corner_points: &[(f64, f64); 4],
+        grid_resolution: (usize, usize),
     ) -> Result<PerspectiveGridIterator, PerspectiveGridError> {
         let transform = {
-            let [(x0, y0), (x1, y1), (x2, y2), (x3, y3)] = points;
+            let [(x0, y0), (x1, y1), (x2, y2), (x3, y3)] = *corner_points;
 
             if ((x0 - x1 + x2 - x3) == 0.0) && ((y0 - y1 + y2 - y3) == 0.0) {
                 Matrix3::new(
@@ -48,7 +48,7 @@ impl PerspectiveGridIterator {
 
         Ok(PerspectiveGridIterator {
             transform,
-            resolution,
+            grid_resolution,
             next_point_index: 0,
         })
     }
@@ -58,19 +58,19 @@ impl Iterator for PerspectiveGridIterator {
     type Item = (f64, f64);
 
     fn next(&mut self) -> Option<Self::Item> {
-        let (resolution_x, resolution_y) = self.resolution;
+        let (grid_resolution_x, grid_resolution_y) = self.grid_resolution;
 
-        if self.next_point_index >= resolution_x * resolution_y {
+        if self.next_point_index >= grid_resolution_x * grid_resolution_y {
             None
         } else {
             let point_index = self.next_point_index;
             self.next_point_index += 1;
 
-            let (index_x, index_y) = (point_index % resolution_x, point_index / resolution_x);
+            let (index_x, index_y) = (point_index % grid_resolution_x, point_index / grid_resolution_x);
 
             let [grid_x, grid_y, grid_z]: [f64; 3] = (RowVector3::from([
-                index_x as f64 / (resolution_x - 1) as f64,
-                index_y as f64 / (resolution_y - 1) as f64,
+                index_x as f64 / (grid_resolution_x - 1) as f64,
+                index_y as f64 / (grid_resolution_y - 1) as f64,
                 1.0,
             ]) * self.transform)
                 .into();
