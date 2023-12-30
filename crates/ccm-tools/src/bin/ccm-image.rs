@@ -1,4 +1,4 @@
-use ccm_impl::color_reference_charts::XRITE_COLORCHECKER_CLASSIC_2014;
+use ccm_image::color_reference_charts::XRITE_COLORCHECKER_CLASSIC_2014;
 
 fn main() {
     let image = image::open("test/test-01.png").unwrap().to_rgb8();
