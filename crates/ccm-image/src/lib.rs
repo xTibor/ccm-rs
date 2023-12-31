@@ -1,7 +1,8 @@
 use ccm_impl::PerspectiveGridIterator;
 use image::{GenericImage, GenericImageView, ImageBuffer, Rgb};
 
-pub use ccm_impl::{color_reference_charts, ColorCorrectionMatrix, SRgbColor};
+pub use ccm_impl::color::SRgbColor;
+pub use ccm_impl::{color_reference_charts, ColorCorrectionMatrix};
 
 pub fn calculate_ccm<I>(
     image: &I,

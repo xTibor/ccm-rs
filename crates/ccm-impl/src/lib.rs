@@ -22,12 +22,11 @@
 //!   X-Rite, Incorporated
 //!   https://www.xrite.com/service-support/new_color_specifications_for_colorchecker_sg_and_classic_charts
 
-mod color;
 mod color_correction_matrix;
 mod perspective_grid_iterator;
 
-pub use color::SRgbColor;
 pub use color_correction_matrix::{apply_ccm, calculate_ccm, ColorCorrectionMatrix};
 pub use perspective_grid_iterator::PerspectiveGridIterator;
 
+pub mod color;
 pub mod color_reference_charts;
