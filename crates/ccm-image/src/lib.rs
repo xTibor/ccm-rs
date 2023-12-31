@@ -1,3 +1,4 @@
+use ccm_impl::color::srgb_average;
 use ccm_impl::PerspectiveGridIterator;
 use image::{GenericImage, GenericImageView, ImageBuffer, Rgb};
 
@@ -8,6 +9,7 @@ pub fn calculate_ccm<I>(
     image: &I,
     corner_points: &[(f64, f64); 4],
     grid_resolution: (usize, usize),
+    sampling_radius: usize,
     reference_colors: &[SRgbColor],
 ) -> ColorCorrectionMatrix
 where
@@ -16,13 +18,32 @@ where
     let (grid_resolution_x, grid_resolution_y) = grid_resolution;
     assert_eq!(reference_colors.len(), grid_resolution_x * grid_resolution_y);
 
+    // TODO: Bounds checking
     let image_colors = PerspectiveGridIterator::new(corner_points, grid_resolution)
         .unwrap()
-        .map(|(x, y)| {
-            // TODO: Sample average N-pixel neighborhood
-            image.get_pixel(x as u32, y as u32).0
+        .map(|(grid_x, grid_y)| {
+            let mut sampled_colors = Vec::new();
+
+            for sample_dy in -(sampling_radius as isize)..=(sampling_radius as isize) {
+                for sample_dx in -(sampling_radius as isize)..=(sampling_radius as isize) {
+                    let sample_rx = (sample_dx as f64) / (sampling_radius as f64);
+                    let sample_ry = (sample_dy as f64) / (sampling_radius as f64);
+
+                    if sample_rx * sample_rx + sample_ry * sample_ry > 1.0 {
+                        continue;
+                    }
+
+                    let sample_x = (grid_x as isize + sample_dx) as u32;
+                    let sample_y = (grid_y as isize + sample_dy) as u32;
+
+                    let sampled_color = image.get_pixel(sample_x, sample_y).0;
+                    sampled_colors.push(sampled_color);
+                }
+            }
+
+            srgb_average(&sampled_colors)
         })
-        .collect::<Vec<_>>();
+        .collect::<Vec<SRgbColor>>();
 
     ccm_impl::calculate_ccm(&image_colors, reference_colors)
 }

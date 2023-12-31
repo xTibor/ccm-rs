@@ -10,6 +10,7 @@ fn main() {
         &image,
         &corner_points,
         grid_resolution,
+        4,
         &XRITE_COLORCHECKER_CLASSIC_2014,
     );
 
