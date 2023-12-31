@@ -14,7 +14,7 @@ const CCM_ERROR_EPSILON: f64 = 0.1;
 
 pub type ColorCorrectionMatrix = Matrix3<f64>;
 
-pub fn calculate_ccm(colors_detected: &[SRgbColor], colors_reference: &[SRgbColor]) -> ColorCorrectionMatrix {
+pub fn calculate_ccm(image_colors: &[SRgbColor], reference_colors: &[SRgbColor]) -> ColorCorrectionMatrix {
     type CMatrix = OMatrix<f64, Dyn, U3>;
     type EMatrix = OMatrix<f64, Dyn, Dyn>;
     type EDiagonal = OVector<f64, Dyn>;
@@ -29,23 +29,25 @@ pub fn calculate_ccm(colors_detected: &[SRgbColor], colors_reference: &[SRgbColo
         )
     };
 
-    let matrix_detected = colors_to_matrix(colors_detected);
-    let matrix_reference = colors_to_matrix(colors_reference);
+    let matrix_image_colors = colors_to_matrix(image_colors);
+    let matrix_reference_colors = colors_to_matrix(reference_colors);
 
-    let mut ccm_matrix = (matrix_detected.transpose() * &matrix_detected).try_inverse().unwrap()
-        * matrix_detected.transpose()
-        * &matrix_reference;
+    let mut matrix = (matrix_image_colors.transpose() * &matrix_image_colors)
+        .try_inverse()
+        .unwrap()
+        * matrix_image_colors.transpose()
+        * &matrix_reference_colors;
 
     for _ in 0..CCM_MAX_ITERATIONS {
         let cost_matrix = {
             let cost_vector = {
-                let iter_detected = colors_detected.iter().map(srgb_to_linear).map(RowVector3::from);
-                let iter_reference = colors_reference.iter().map(srgb_to_linear).map(RowVector3::from);
+                let iter_image_colors = image_colors.iter().map(srgb_to_linear).map(RowVector3::from);
+                let iter_reference_colors = reference_colors.iter().map(srgb_to_linear).map(RowVector3::from);
 
-                iter_detected
-                    .zip(iter_reference)
+                iter_image_colors
+                    .zip(iter_reference_colors)
                     .map(|(color_detected, color_reference)| {
-                        color_reference.metric_distance(&(color_detected * ccm_matrix))
+                        color_reference.metric_distance(&(color_detected * matrix))
                     })
                     .map(|error_value| 1.0 / (error_value + CCM_ERROR_EPSILON))
                     .collect::<Vec<_>>()
@@ -67,29 +69,29 @@ pub fn calculate_ccm(colors_detected: &[SRgbColor], colors_reference: &[SRgbColo
             EMatrix::from_diagonal(&EDiagonal::from(processed_cost_vector))
         };
 
-        let prev_ccm_matrix = ccm_matrix;
+        let prev_matrix = matrix;
 
-        ccm_matrix = (matrix_detected.transpose() * &cost_matrix * &matrix_detected)
+        matrix = (matrix_image_colors.transpose() * &cost_matrix * &matrix_image_colors)
             .try_inverse()
             .unwrap()
-            * matrix_detected.transpose()
+            * matrix_image_colors.transpose()
             * &cost_matrix
-            * &matrix_reference;
+            * &matrix_reference_colors;
 
         {
-            let ccm_convergence = (prev_ccm_matrix - ccm_matrix).abs();
+            let matrix_convergence = (prev_matrix - matrix).abs();
 
-            if ccm_convergence.iter().all(|diff| *diff < CCM_CONVERGENCE_THRESHOLD) {
+            if matrix_convergence.iter().all(|diff| *diff < CCM_CONVERGENCE_THRESHOLD) {
                 break;
             }
         }
     }
 
-    ccm_matrix
+    matrix
 }
 
-pub fn apply_ccm(srgb_color: &SRgbColor, ccm_matrix: &ColorCorrectionMatrix) -> SRgbColor {
+pub fn apply_ccm(srgb_color: &SRgbColor, matrix: &ColorCorrectionMatrix) -> SRgbColor {
     let linear_color = srgb_to_linear(srgb_color);
-    let corrected_color = RowVector3::from(linear_color) * ccm_matrix;
+    let corrected_color = RowVector3::from(linear_color) * matrix;
     linear_to_srgb(&corrected_color.into())
 }
