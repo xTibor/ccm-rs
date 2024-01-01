@@ -11,6 +11,7 @@ members = [
     "crates/ccm-impl",
     "crates/ccm-image",
     "crates/ccm-tools",
+    "crates/ccm-egui",
 ]
 
 [workspace.dependencies]
