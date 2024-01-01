@@ -18,10 +18,17 @@ where
     let (grid_resolution_x, grid_resolution_y) = grid_resolution;
     assert_eq!(reference_colors.len(), grid_resolution_x * grid_resolution_y);
 
-    // TODO: Bounds checking
+    // Cannot use `GenericImageView::in_bounds` with float and negative coordinates
+    // that `PerspectiveGridIterator` may emit.
+    #[rustfmt::skip]
+    let in_bounds = |x, y| {
+        (x >= 0.0) && (x < image.width() as f64) &&
+        (y >= 0.0) && (y < image.height() as f64)
+    };
+
     let image_colors = PerspectiveGridIterator::new(corner_points, grid_resolution)?
         .map(|(grid_x, grid_y)| {
-            if !image.in_bounds(grid_x as u32, grid_y as u32) {
+            if !in_bounds(grid_x, grid_y) {
                 return None;
             }
 
@@ -39,7 +46,7 @@ where
                     let sample_x = (grid_x as isize + sample_dx) as u32;
                     let sample_y = (grid_y as isize + sample_dy) as u32;
 
-                    if image.in_bounds(sample_x, sample_y) {
+                    if in_bounds(sample_x as f64, sample_y as f64) {
                         let sampled_color = image.get_pixel(sample_x, sample_y).0;
                         sampled_colors.push(sampled_color);
                     }
