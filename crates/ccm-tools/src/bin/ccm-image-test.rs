@@ -12,7 +12,8 @@ fn main() {
         grid_resolution,
         4,
         &XRITE_COLORCHECKER_CLASSIC_2014,
-    );
+    )
+    .unwrap();
 
     let output_image = ccm_image::apply_ccm(&image, &color_correction_matrix);
     output_image.save("test/output.png").unwrap();

@@ -1,11 +1,6 @@
 use nalgebra::{Matrix3, RowVector3};
 
 #[derive(Debug)]
-pub enum PerspectiveGridError {
-    IncorrectParameters,
-}
-
-#[derive(Debug)]
 pub struct PerspectiveGridIterator {
     transform: Matrix3<f64>,
     grid_resolution: (usize, usize),
@@ -17,7 +12,7 @@ impl PerspectiveGridIterator {
     pub fn new(
         corner_points: &[(f64, f64); 4],
         grid_resolution: (usize, usize),
-    ) -> Result<PerspectiveGridIterator, PerspectiveGridError> {
+    ) -> Option<PerspectiveGridIterator> {
         let transform = {
             let [(x0, y0), (x1, y1), (x2, y2), (x3, y3)] = *corner_points;
 
@@ -29,7 +24,7 @@ impl PerspectiveGridIterator {
                 )
             } else {
                 if (((x1 - x2) * (y3 - y2)) - ((x3 - x2) * (y1 - y2))) == 0.0 {
-                    return Err(PerspectiveGridError::IncorrectParameters);
+                    return None;
                 }
 
                 Matrix3::new(
@@ -46,7 +41,7 @@ impl PerspectiveGridIterator {
             }
         };
 
-        Ok(PerspectiveGridIterator {
+        Some(PerspectiveGridIterator {
             transform,
             grid_resolution,
             next_point_index: 0,

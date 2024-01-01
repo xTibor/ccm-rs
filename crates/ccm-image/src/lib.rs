@@ -11,7 +11,7 @@ pub fn calculate_ccm<I>(
     grid_resolution: (usize, usize),
     sampling_radius: usize,
     reference_colors: &[SRgbColor],
-) -> ColorCorrectionMatrix
+) -> Option<ColorCorrectionMatrix>
 where
     I: GenericImageView<Pixel = Rgb<u8>>,
 {
@@ -19,9 +19,12 @@ where
     assert_eq!(reference_colors.len(), grid_resolution_x * grid_resolution_y);
 
     // TODO: Bounds checking
-    let image_colors = PerspectiveGridIterator::new(corner_points, grid_resolution)
-        .unwrap()
+    let image_colors = PerspectiveGridIterator::new(corner_points, grid_resolution)?
         .map(|(grid_x, grid_y)| {
+            if !image.in_bounds(grid_x as u32, grid_y as u32) {
+                return None;
+            }
+
             let mut sampled_colors = Vec::new();
 
             for sample_dy in -(sampling_radius as isize)..=(sampling_radius as isize) {
@@ -36,16 +39,21 @@ where
                     let sample_x = (grid_x as isize + sample_dx) as u32;
                     let sample_y = (grid_y as isize + sample_dy) as u32;
 
-                    let sampled_color = image.get_pixel(sample_x, sample_y).0;
-                    sampled_colors.push(sampled_color);
+                    if image.in_bounds(sample_x, sample_y) {
+                        let sampled_color = image.get_pixel(sample_x, sample_y).0;
+                        sampled_colors.push(sampled_color);
+                    }
                 }
             }
 
             srgb_average(&sampled_colors)
         })
-        .collect::<Vec<SRgbColor>>();
+        .collect::<Option<Vec<SRgbColor>>>()?;
 
-    ccm_impl::calculate_ccm(&image_colors, reference_colors)
+    assert_eq!(reference_colors.len(), image_colors.len());
+    let matrix = ccm_impl::calculate_ccm(&image_colors, reference_colors);
+
+    Some(matrix)
 }
 
 pub fn apply_ccm<I>(image: &I, matrix: &ColorCorrectionMatrix) -> ImageBuffer<Rgb<u8>, Vec<u8>>
